@@ -3,7 +3,7 @@
 **Herramienta de análisis cualitativo estructurado para investigadores.**  
 Sin API. Sin servidor. Sin costo. Todo ocurre en tu navegador.
 
-🔗 **Demo:** `https://[tu-usuario].github.io/[nombre-del-repo]`
+🔗 **Demo:** [`https://rekol08.github.io/An-lisis-Cualitativo-/`]
 
 ---
 
