@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -25,8 +26,6 @@
   --mono:'JetBrains Mono',monospace;
 }
 html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
- 
-/* ── LAYOUT ── */
 .app{display:grid;grid-template-columns:260px 1fr;grid-template-rows:56px 1fr;height:100vh;overflow:hidden}
 .topbar{grid-column:1/-1;background:var(--navy);display:flex;align-items:center;padding:0 20px;gap:14px}
 .logo-mark{width:32px;height:32px;background:var(--teal);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -36,11 +35,8 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .mode-pills{display:flex;gap:6px;margin-left:auto}
 .mode-pill{padding:5px 13px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);background:transparent;transition:all .15s;font-family:var(--font)}
 .mode-pill.active{background:var(--teal);border-color:var(--teal);color:#fff}
- 
 .sidebar{background:var(--white);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;padding:16px 0}
 .main{overflow-y:auto;scroll-behavior:smooth}
- 
-/* ── SIDEBAR ── */
 .sb-section{padding:0 12px;margin-bottom:4px}
 .sb-label{font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--text3);text-transform:uppercase;padding:8px 6px 4px}
 .sb-btn{width:100%;text-align:left;background:none;border:none;cursor:pointer;padding:8px 10px;border-radius:var(--radius);display:flex;align-items:center;gap:9px;font-family:var(--font);font-size:13px;color:var(--text2);transition:all .12s}
@@ -50,23 +46,15 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .sb-icon{width:24px;height:24px;border-radius:6px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;color:var(--slate);transition:all .12s}
 .sb-divider{height:1px;background:var(--border);margin:10px 12px}
 .sb-footer{margin-top:auto;padding:14px 16px;font-size:11px;color:var(--text3);line-height:1.7;border-top:1px solid var(--border)}
- 
-/* ── STEP TABS ── */
 .steps-nav{display:flex;border-bottom:1px solid var(--border);background:var(--white);position:sticky;top:0;z-index:10}
 .step-tab{flex:1;padding:12px 6px;text-align:center;font-size:11px;font-weight:500;color:var(--text3);border:none;border-bottom:2px solid transparent;cursor:pointer;background:none;font-family:var(--font);transition:all .13s}
 .step-tab:hover{color:var(--navy);background:var(--bg)}
 .step-tab.active{color:var(--teal);border-bottom-color:var(--teal);font-weight:600}
 .step-n{display:block;font-size:20px;font-weight:600;margin-bottom:1px}
- 
-/* ── PANELS ── */
 .panel{display:none;padding:24px 28px 48px}
 .panel.active{display:block}
- 
-/* ── SECTION HEADERS ── */
 .sec-head{font-size:16px;font-weight:600;color:var(--navy);margin-bottom:4px}
 .sec-sub{font-size:13px;color:var(--text3);margin-bottom:20px}
- 
-/* ── MODE HERO ── */
 .mode-hero{border-radius:var(--radius-lg);padding:24px 28px;margin-bottom:24px;display:flex;gap:20px;align-items:flex-start}
 .mode-hero.inv{background:linear-gradient(135deg,#0F2040 0%,#1A3260 100%)}
 .mode-hero.gen{background:linear-gradient(135deg,#0B3D35 0%,#1A6B5A 100%)}
@@ -75,8 +63,6 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .mh-icon.gen{background:rgba(255,255,255,0.12)}
 .mh-title{font-size:16px;font-weight:600;color:#fff;margin-bottom:4px}
 .mh-desc{font-size:13px;color:rgba(255,255,255,0.65);line-height:1.65;max-width:480px}
- 
-/* ── TEMPLATE CARDS ── */
 .tmpl-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
 .tmpl-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:18px;cursor:pointer;transition:all .14s}
 .tmpl-card:hover{border-color:var(--teal)}
@@ -84,37 +70,28 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .tc-icon{font-size:24px;margin-bottom:8px}
 .tc-title{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:3px}
 .tc-desc{font-size:12px;color:var(--text3);line-height:1.55}
- 
-/* ── CODE PREVIEW ── */
 .code-box{background:#0F1C2E;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:18px}
 .cb-header{padding:8px 14px;background:rgba(0,0,0,0.25);display:flex;align-items:center;gap:6px}
 .cb-dot{width:9px;height:9px;border-radius:50%}
 .cb-fname{font-size:11px;color:rgba(255,255,255,0.4);margin-left:4px;font-family:var(--mono)}
 .cb-body{padding:16px 20px;font-family:var(--mono);font-size:12px;color:#A8C8E8;line-height:1.9;max-height:300px;overflow-y:auto;white-space:pre-wrap}
- 
-/* ── UPLOAD / INPUT ── */
 .input-tabs{display:flex;gap:0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px;width:fit-content}
 .itab{padding:8px 18px;font-size:12px;font-weight:500;cursor:pointer;background:var(--white);color:var(--text2);border:none;font-family:var(--font);transition:all .12s}
 .itab.active{background:var(--navy);color:#fff}
- 
 .upload-zone{border:2px dashed var(--border2);border-radius:var(--radius-lg);padding:36px 24px;text-align:center;cursor:pointer;transition:all .18s;background:var(--white);position:relative;margin-bottom:14px}
 .upload-zone:hover,.upload-zone.dov{border-color:var(--teal);background:var(--teal-pale)}
 .upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
 .uz-icon{font-size:32px;margin-bottom:8px;display:block}
 .uz-title{font-size:15px;font-weight:600;color:var(--navy);margin-bottom:4px}
 .uz-sub{font-size:12px;color:var(--text3)}
- 
 .paste-area{width:100%;min-height:180px;border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:14px;font-family:var(--mono);font-size:12px;color:var(--text);background:var(--white);resize:vertical;transition:border-color .12s;line-height:1.7}
 .paste-area:focus{outline:none;border-color:var(--teal)}
- 
 .file-chip{display:flex;align-items:center;gap:9px;padding:9px 13px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:7px;font-size:13px}
 .fc-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .fc-ok{color:var(--green);font-size:11px;font-weight:500}
 .fc-err{color:var(--red);font-size:11px}
 .fc-rm{background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;line-height:1;padding:0}
 .fc-rm:hover{color:var(--red)}
- 
-/* ── DATA PREVIEW TABLE ── */
 .table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin-bottom:18px;background:var(--white)}
 .data-table{width:100%;border-collapse:collapse;font-size:12px}
 .data-table th{background:var(--navy);color:#fff;padding:8px 12px;text-align:left;font-weight:500;white-space:nowrap}
@@ -122,8 +99,6 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .data-table tr:last-child td{border-bottom:none}
 .data-table tr:hover td{background:var(--bg)}
 .data-table .num{text-align:right;font-family:var(--mono)}
- 
-/* ── FIELDS ── */
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
 .field-group{margin-bottom:14px}
 .field-label{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px;display:block}
@@ -132,16 +107,12 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .field-input:focus{outline:none;border-color:var(--teal)}
 textarea.field-input{resize:vertical;min-height:64px;line-height:1.55}
 select.field-input{cursor:pointer}
- 
-/* ── COLUMN SELECTOR ── */
 .col-selector{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
 .col-chip{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid var(--border);color:var(--text2);background:var(--white);transition:all .12s;display:flex;align-items:center;gap:5px}
 .col-chip:hover{border-color:var(--teal)}
 .col-chip.sel{background:var(--indigo-pale);border-color:var(--indigo);color:var(--indigo)}
 .col-chip .ct{font-size:10px;color:var(--text3)}
 .col-chip.sel .ct{color:var(--indigo)}
- 
-/* ── BTNS ── */
 .btn-primary{padding:11px 24px;background:var(--navy);color:#fff;border:none;border-radius:var(--radius);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:all .15s}
 .btn-primary:hover{background:var(--navy2)}
 .btn-primary:disabled{background:var(--slate-lt);cursor:not-allowed}
@@ -150,33 +121,23 @@ select.field-input{cursor:pointer}
 .btn-teal{padding:9px 18px;background:var(--teal-pale);color:var(--teal);border:1px solid rgba(26,140,122,.25);border-radius:var(--radius);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .12s}
 .btn-teal:hover{background:var(--teal);color:#fff}
 .btn-row{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
- 
-/* ── ALERT ── */
 .alert{padding:10px 14px;border-radius:var(--radius);font-size:13px;margin-bottom:14px;display:none}
 .alert.err{background:var(--red-pale);border:1px solid #FBBABA;color:var(--red);display:block}
 .alert.ok{background:var(--green-pale);border:1px solid rgba(31,122,74,.25);color:var(--green);display:block}
 .alert.info{background:var(--indigo-pale);border:1px solid rgba(61,82,176,.2);color:var(--indigo);display:block}
- 
-/* ── LOADING ── */
 .loading-panel{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:40px;text-align:center}
 .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 16px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .prog-bar{width:100%;height:4px;background:var(--border);border-radius:2px;margin-top:18px;overflow:hidden}
 .prog-fill{height:100%;background:var(--teal);border-radius:2px;transition:width .35s ease}
- 
-/* ── RESULTS ── */
 .res-header{display:flex;align-items:center;gap:12px;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--border)}
 .res-title{font-size:18px;font-weight:600;color:var(--navy);flex:1}
 .exp-btns{display:flex;gap:7px;flex-wrap:wrap}
- 
-/* ── STAT CARDS ── */
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:22px}
 .stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px}
 .sc-label{font-size:11px;color:var(--text3);margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
 .sc-value{font-size:22px;font-weight:600;color:var(--navy);font-variant-numeric:tabular-nums;line-height:1.2}
 .sc-unit{font-size:12px;color:var(--slate);margin-top:2px}
- 
-/* ── RESULT CARDS ── */
 .res-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:16px;overflow:hidden}
 .rc-head{padding:13px 18px;background:var(--navy);display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
 .rc-head:hover{background:var(--navy2)}
@@ -186,8 +147,6 @@ select.field-input{cursor:pointer}
 .res-card.col .rc-toggle{transform:rotate(-90deg)}
 .rc-body{padding:20px;display:block}
 .res-card.col .rc-body{display:none}
- 
-/* ── CONTENT ── */
 .ac{font-size:13px;line-height:1.8;color:var(--text)}
 .ac h4{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--slate);margin:18px 0 8px;padding-top:14px;border-top:1px solid var(--border)}
 .ac h4:first-child{border-top:none;padding-top:0;margin-top:0}
@@ -200,14 +159,10 @@ select.field-input{cursor:pointer}
 .sig.neu{background:var(--bg);color:var(--slate);border:1px solid var(--border)}
 .val-pill{display:inline-block;background:var(--indigo-pale);color:var(--indigo);padding:2px 9px;border-radius:4px;font-family:var(--mono);font-size:12px;font-weight:500;margin:2px}
 .interpret{background:var(--teal-pale);border-left:3px solid var(--teal);padding:10px 14px;border-radius:0 var(--radius) var(--radius) 0;font-size:13px;color:var(--text2);margin:12px 0;line-height:1.65}
- 
-/* ── LIKERT ── */
 .likert-bar{margin-bottom:12px}
 .lb-label{font-size:12px;color:var(--text2);margin-bottom:4px;font-weight:500}
 .lb-track{height:18px;background:var(--bg);border-radius:4px;overflow:hidden;display:flex}
 .lb-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:600;transition:width .4s}
- 
-/* ── CORR TABLE ── */
 .corr-wrap{overflow-x:auto;margin-bottom:14px}
 .corr-table{border-collapse:collapse;font-size:11px}
 .corr-table th,.corr-table td{padding:6px 10px;border:1px solid var(--border);text-align:center;white-space:nowrap}
@@ -216,29 +171,19 @@ select.field-input{cursor:pointer}
 .cpos{background:#E6F5F2;color:#0B5E50}
 .cneg{background:#FEF0F0;color:#8B1E1E}
 .cneu{background:var(--bg);color:var(--text3)}
- 
-/* ── CHART CANVAS ── */
 .chart-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px}
 .chart-title{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em}
 canvas{max-height:260px}
- 
-/* ── EMPTY ── */
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:52vh;text-align:center;padding:40px}
 .empty-icon{font-size:48px;margin-bottom:14px;opacity:.3}
 .empty-title{font-size:18px;font-weight:600;color:var(--navy);margin-bottom:6px}
 .empty-sub{font-size:13px;color:var(--text3);max-width:340px;line-height:1.75}
- 
-/* ── RULES GRID ── */
 .rules-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
 .rule-item{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px}
 .rule-title{font-size:12px;font-weight:600;color:var(--navy);margin-bottom:3px}
 .rule-desc{font-size:12px;color:var(--text3);line-height:1.55}
- 
-/* ── DOWNLOAD BTN IN HERO ── */
 .dl-btn{padding:8px 16px;background:rgba(255,255,255,0.12);color:#fff;border:1.5px solid rgba(255,255,255,.25);border-radius:var(--radius);font-family:var(--font);font-size:12px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .12s;margin-top:14px}
 .dl-btn:hover{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.45)}
- 
-/* ── PRINT ── */
 @media print{
   .topbar,.sidebar,.steps-nav,.panel:not(.active),.exp-btns,.btn-primary,.btn-sec,.btn-teal{display:none!important}
   .app{display:block;height:auto}
@@ -254,8 +199,6 @@ canvas{max-height:260px}
 </head>
 <body>
 <div class="app">
- 
-<!-- TOPBAR -->
 <header class="topbar">
   <div class="logo-mark">
     <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -272,8 +215,6 @@ canvas{max-height:260px}
   </div>
   <span class="app-sub">Análisis cuantitativo · Sin backend · 100% local</span>
 </header>
- 
-<!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="sb-section">
     <div class="sb-label">Flujo de trabajo</div>
@@ -298,8 +239,6 @@ canvas{max-height:260px}
     <span style="color:var(--teal);font-weight:500">v1.0 · ES/EN</span>
   </div>
 </aside>
- 
-<!-- MAIN -->
 <main class="main" id="mainEl">
   <nav class="steps-nav">
     <button class="step-tab active" id="tab0" onclick="goStep(0)"><span class="step-n">1</span>Plantilla</button>
@@ -307,8 +246,6 @@ canvas{max-height:260px}
     <button class="step-tab" id="tab2" onclick="goStep(2)"><span class="step-n">3</span>Config.</button>
     <button class="step-tab" id="tab3" onclick="goStep(3)"><span class="step-n">4</span>Análisis</button>
   </nav>
- 
-  <!-- ══ PANEL 0: PLANTILLA ══ -->
   <div class="panel active" id="panel0">
     <div class="mode-hero inv" id="heroInv">
       <div class="mh-icon inv">🔬</div>
@@ -326,10 +263,8 @@ canvas{max-height:260px}
         <button class="dl-btn" onclick="downloadTemplate()">⬇ Descargar plantilla para este modo</button>
       </div>
     </div>
- 
     <div class="sec-head">Selecciona el tipo de datos</div>
     <p class="sec-sub">La plantilla descargada se adapta al tipo seleccionado.</p>
- 
     <div class="tmpl-grid" id="invTemplates">
       <div class="tmpl-card sel" id="tc-likert" onclick="selTemplate('likert')">
         <div class="tc-icon">📋</div>
@@ -352,7 +287,6 @@ canvas{max-height:260px}
         <div class="tc-desc">Frecuencias, tablas cruzadas y prueba chi-cuadrado para datos nominales u ordinales.</div>
       </div>
     </div>
- 
     <div class="tmpl-grid" id="genTemplates" style="display:none">
       <div class="tmpl-card sel" id="tc-reporte" onclick="selTemplate('reporte')">
         <div class="tc-icon">📑</div>
@@ -375,7 +309,6 @@ canvas{max-height:260px}
         <div class="tc-desc">Relación entre dos variables categóricas con frecuencias absolutas y relativas.</div>
       </div>
     </div>
- 
     <div class="sec-head" style="margin-bottom:10px">Vista previa de la plantilla</div>
     <div class="code-box">
       <div class="cb-header">
@@ -386,61 +319,46 @@ canvas{max-height:260px}
       </div>
       <div class="cb-body" id="previewBody"></div>
     </div>
- 
     <div class="sec-head" style="margin-bottom:10px">Reglas del archivo</div>
     <div class="rules-grid" id="rulesGrid"></div>
- 
     <button class="btn-primary" onclick="downloadTemplate()">⬇ Descargar plantilla y continuar →</button>
   </div>
- 
-  <!-- ══ PANEL 1: DATOS ══ -->
   <div class="panel" id="panel1">
     <div class="sec-head">Cargar datos</div>
-    <p class="sec-sub">Sube un archivo CSV/TXT o pega los datos directamente.</p>
- 
+    <p class="sec-sub">Sube un archivo CSV, TXT, TSV o Excel (XLSX/XLS), o pega los datos directamente. La codificación se detecta automáticamente.</p>
     <div class="input-tabs">
       <button class="itab active" id="itab-file" onclick="setInputTab('file')">⬆ Subir archivo</button>
       <button class="itab" id="itab-paste" onclick="setInputTab('paste')">✏ Pegar datos</button>
     </div>
- 
     <div id="pane-file">
       <div class="upload-zone" id="uploadZone">
-        <input type="file" id="fileInput" multiple accept=".csv,.txt" onchange="handleFiles(this.files)">
+        <input type="file" id="fileInput" multiple accept=".csv,.txt,.tsv,.xlsx,.xls" onchange="handleFiles(this.files)">
         <span class="uz-icon">📂</span>
         <div class="uz-title">Arrastra el archivo aquí</div>
-        <div class="uz-sub">O haz clic para seleccionar · CSV o TXT</div>
+        <div class="uz-sub">O haz clic para seleccionar · CSV, TXT, TSV o Excel (XLSX/XLS)</div>
       </div>
       <div id="filesList"></div>
     </div>
- 
     <div id="pane-paste" style="display:none">
       <p style="font-size:12px;color:var(--text3);margin-bottom:8px">Primera fila = encabezados de columnas. Separa con coma, punto y coma o tabulación.</p>
       <textarea class="paste-area" id="pasteArea" placeholder="variable1,variable2,variable3&#10;4,5,3&#10;3,4,5&#10;5,5,4&#10;2,3,4" onchange="parsePaste()" oninput="parsePaste()"></textarea>
     </div>
- 
     <div id="alertBox1" class="alert"></div>
- 
     <div id="previewSection" style="display:none">
       <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em">Vista previa de datos — <span id="previewCount"></span></div>
       <div class="table-wrap"><table class="data-table" id="previewTable"></table></div>
       <div id="colTypes" style="font-size:12px;color:var(--text3);margin-bottom:14px"></div>
     </div>
- 
     <div class="btn-row">
       <button class="btn-sec" onclick="goStep(0)">← Plantilla</button>
       <button class="btn-primary" id="btnNext1" onclick="goStep(2)" disabled>Continuar →</button>
     </div>
   </div>
- 
-  <!-- ══ PANEL 2: CONFIGURACIÓN ══ -->
   <div class="panel" id="panel2">
     <div class="sec-head">Configuración del análisis</div>
     <p class="sec-sub">Selecciona las variables a analizar y describe tu investigación.</p>
- 
     <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em">Variables detectadas</div>
     <div class="col-selector" id="colSelector"></div>
- 
-    <!-- INV extras -->
     <div id="invConfig">
       <div class="field-row">
         <div class="field-group">
@@ -507,8 +425,6 @@ canvas{max-height:260px}
         <textarea class="field-input" id="studyNotes" placeholder="Instrumento validado por juicio de expertos. Aplicado entre enero y marzo de 2025."></textarea>
       </div>
     </div>
- 
-    <!-- GEN config -->
     <div id="genConfig" style="display:none">
       <div class="field-row">
         <div class="field-group">
@@ -529,15 +445,12 @@ canvas{max-height:260px}
         <textarea class="field-input" id="repObj" placeholder="Evaluar el comportamiento de los indicadores de matrícula y retención durante el período..."></textarea>
       </div>
     </div>
- 
     <div id="alertBox2" class="alert"></div>
     <div class="btn-row">
       <button class="btn-sec" onclick="goStep(1)">← Datos</button>
       <button class="btn-primary" onclick="runAnalysis()">⚙ Ejecutar análisis</button>
     </div>
   </div>
- 
-  <!-- ══ PANEL 3: RESULTADOS ══ -->
   <div class="panel" id="panel3">
     <div class="empty" id="emptyState">
       <div class="empty-icon">📊</div>
@@ -560,7 +473,6 @@ canvas{max-height:260px}
   </div>
 </main>
 </div>
- 
 <script>
 // ══ STATE ══
 let MODE = 'inv';
@@ -570,7 +482,7 @@ let headers = [];
 let numericCols = [];
 let selectedCols = [];
 let charts = [];
- 
+
 // ══ MODE ══
 function setMode(m) {
   MODE = m;
@@ -587,7 +499,7 @@ function setMode(m) {
   document.getElementById('tc-'+(m==='inv'?'likert':'reporte'))?.classList.add('sel');
   renderPreview();
 }
- 
+
 // ══ TEMPLATES ══
 const TEMPLATES = {
   likert:{
@@ -671,14 +583,14 @@ const TEMPLATES = {
     content:`# Plantilla: Tabla cruzada\n\nid,var1,var2\n1,Sede A,Satisfecho\n2,Sede B,Insatisfecho\n3,Sede A,Satisfecho\n4,Sede A,Neutral\n5,Sede B,Satisfecho\n6,Sede B,Neutral\n7,Sede A,Insatisfecho\n8,Sede B,Satisfecho`
   }
 };
- 
+
 function selTemplate(t) {
   TMPL = t;
   document.querySelectorAll('.tmpl-card').forEach(c=>c.classList.remove('sel'));
   document.getElementById('tc-'+t)?.classList.add('sel');
   renderPreview();
 }
- 
+
 function renderPreview() {
   const t = TEMPLATES[TMPL];
   if(!t) return;
@@ -690,14 +602,16 @@ function renderPreview() {
       <div class="rule-desc">${desc}</div>
     </div>`).join('');
 }
- 
+
 function downloadTemplate() {
   const t = TEMPLATES[TMPL];
   if(!t) return;
-  const blob = new Blob([t.content.replace(/^#[^\n]+\n/gm,'').trim()], {type:'text/csv;charset=utf-8'});
+  // BOM al inicio para que Excel abra el CSV con UTF-8 y no rompa las tildes
+  const clean = t.content.replace(/^#[^\n]+\n/gm,'').trim();
+  const blob = new Blob(['\uFEFF'+clean], {type:'text/csv;charset=utf-8'});
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = t.fname; a.click();
 }
- 
+
 // ══ NAVIGATION ══
 function goStep(n) {
   document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===n));
@@ -706,12 +620,12 @@ function goStep(n) {
   document.getElementById('mainEl').scrollTo({top:0,behavior:'smooth'});
   document.getElementById('sidebarSections').style.display = n===3 ? 'block' : 'none';
 }
- 
+
 function scrollSec(id) {
   goStep(3);
   setTimeout(()=>{ const el=document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); },200);
 }
- 
+
 // ══ INPUT TABS ══
 function setInputTab(t) {
   document.getElementById('itab-file').classList.toggle('active',t==='file');
@@ -719,57 +633,162 @@ function setInputTab(t) {
   document.getElementById('pane-file').style.display = t==='file'?'block':'none';
   document.getElementById('pane-paste').style.display = t==='paste'?'block':'none';
 }
- 
+
 // ══ FILE HANDLING ══
 const uz = document.getElementById('uploadZone');
 uz.addEventListener('dragover',e=>{e.preventDefault();uz.classList.add('dov')});
 uz.addEventListener('dragleave',()=>uz.classList.remove('dov'));
 uz.addEventListener('drop',e=>{e.preventDefault();uz.classList.remove('dov');handleFiles(e.dataTransfer.files)});
- 
+
+// ── Limpieza universal de celdas: normaliza NBSP, espacios de ancho cero,
+//    colapsa espacios repetidos y recorta. Convierte números a texto.
+function cleanCell(v){
+  if(v===null||v===undefined) return '';
+  let s = (typeof v==='number') ? String(v) : String(v);
+  s = s.replace(/\u00A0/g,' ')              // espacio duro → espacio normal
+       .replace(/[\u200B-\u200D\uFEFF]/g,'') // espacios de ancho cero / BOM
+       .replace(/\s+/g,' ')                  // colapsa espacios/tabs/saltos
+       .trim();
+  return s;
+}
+
+// ── Evita colisiones cuando hay encabezados repetidos o vacíos
+function dedupeHeaders(arr){
+  const seen={};
+  return arr.map((h,i)=>{
+    let base = h && h.trim() ? h.trim() : ('columna_'+(i+1));
+    let name = base, k = 1;
+    while(seen[name]){ k++; name = base+'_'+k; }
+    seen[name] = 1;
+    return name;
+  });
+}
+
+// ── Detección de codificación: BOM → UTF-8 estricto → Windows-1252 (fallback)
+function decodeBuffer(buf){
+  const bytes = new Uint8Array(buf);
+  if(bytes.length>=3 && bytes[0]===0xEF && bytes[1]===0xBB && bytes[2]===0xBF)
+    return new TextDecoder('utf-8').decode(bytes.subarray(3));
+  if(bytes.length>=2 && bytes[0]===0xFF && bytes[1]===0xFE)
+    return new TextDecoder('utf-16le').decode(bytes.subarray(2));
+  if(bytes.length>=2 && bytes[0]===0xFE && bytes[1]===0xFF)
+    return new TextDecoder('utf-16be').decode(bytes.subarray(2));
+  try{
+    return new TextDecoder('utf-8',{fatal:true}).decode(bytes);
+  }catch(e){
+    try{ return new TextDecoder('windows-1252').decode(bytes); }
+    catch(e2){ return new TextDecoder('iso-8859-1').decode(bytes); }
+  }
+}
+
+// ── Parser CSV/TSV real: respeta comillas y saltos de línea dentro de campos
+function parseDelimited(text, sep){
+  const rows=[]; let row=[]; let cur=''; let q=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(q){
+      if(ch==='"'){ if(text[i+1]==='"'){cur+='"';i++;} else q=false; }
+      else cur+=ch;
+    } else {
+      if(ch==='"') q=true;
+      else if(ch===sep){ row.push(cur); cur=''; }
+      else if(ch==='\n'){ row.push(cur); rows.push(row); row=[]; cur=''; }
+      else if(ch==='\r'){ /* ignorar; \r\n se maneja con \n */ }
+      else cur+=ch;
+    }
+  }
+  if(cur!==''||row.length){ row.push(cur); rows.push(row); }
+  return rows;
+}
+
 async function handleFiles(files) {
   const f = files[0]; if(!f) return;
-  const text = await f.text();
-  parseCSV(text, f.name);
+  const name = (f.name||'').toLowerCase();
+  try{
+    if(name.endsWith('.xlsx')||name.endsWith('.xls')){
+      if(typeof XLSX==='undefined'){ showAlert('alertBox1','La librería de Excel aún se está cargando. Espera un momento y vuelve a intentar.','err'); return; }
+      const buf = await f.arrayBuffer();
+      const wb = XLSX.read(buf,{type:'array'});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const aoa = XLSX.utils.sheet_to_json(ws,{header:1,defval:'',blankrows:false,raw:true});
+      ingestAOA(aoa, f.name);
+    } else {
+      const buf = await f.arrayBuffer();
+      const text = decodeBuffer(buf);
+      parseCSV(text, f.name);
+    }
+  }catch(err){
+    showAlert('alertBox1','No se pudo leer el archivo: '+(err.message||err),'err');
+  }
 }
- 
+
 function parsePaste() {
   const text = document.getElementById('pasteArea').value.trim();
   if(text.length>10) parseCSV(text, 'datos-pegados.csv');
 }
- 
-function parseCSV(text, fname) {
-  text = text.replace(/^#[^\n]*\n/gm,'').trim();
-  const lines = text.split(/\r?\n/).filter(l=>l.trim()&&!l.startsWith('#'));
-  if(lines.length<2){ showAlert('alertBox1','El archivo debe tener al menos 1 encabezado y 1 fila de datos.','err'); return; }
- 
-  const sep = detectSep(lines[0]);
-  headers = lines[0].split(sep).map(h=>h.trim().replace(/^["']|["']$/g,''));
-  rawData = lines.slice(1).map(line=>{
-    const vals = line.split(sep).map(v=>v.trim().replace(/^["']|["']$/g,''));
-    const obj = {};
-    headers.forEach((h,i)=>{ obj[h] = vals[i]||''; });
-    return obj;
-  }).filter(r=>Object.values(r).some(v=>v!==''));
- 
+
+// ── Núcleo común: recibe encabezados + filas ya limpias y prepara el estado
+function ingest(hdr, data, fname){
+  headers = hdr;
+  rawData = data;
   numericCols = headers.filter(h=>{
     const vals = rawData.map(r=>r[h]).filter(v=>v!=='');
-    const numCount = vals.filter(v=>!isNaN(parseFloat(v))).length;
-    return numCount/vals.length > 0.7;
+    if(!vals.length) return false;
+    return vals.filter(v=>isNum(v)).length/vals.length > 0.7;
   });
- 
   selectedCols = [...numericCols];
   renderFileChip(fname);
   renderDataPreview();
   renderColSelector();
   fillGroupVar();
   document.getElementById('btnNext1').disabled = false;
+  showAlert('alertBox1',`Archivo cargado correctamente: ${rawData.length} filas · ${headers.length} columnas · ${numericCols.length} numérica(s).`,'ok');
 }
- 
+
+// ── Ruta CSV/TXT
+function parseCSV(text, fname) {
+  text = String(text).replace(/^\uFEFF/,'');
+  // elimina líneas de comentario (# ...) completas, sin tocar '#' dentro de datos
+  text = text.split(/\r?\n/).filter(l=>!/^\s*#/.test(l)).join('\n').trim();
+  if(!text){ showAlert('alertBox1','El archivo está vacío o solo contiene comentarios.','err'); return; }
+  const firstLine = text.split(/\r?\n/)[0];
+  const sep = detectSep(firstLine);
+  let rows = parseDelimited(text, sep).filter(r=>r.some(c=>String(c).trim()!==''));
+  if(rows.length<2){ showAlert('alertBox1','El archivo debe tener al menos 1 encabezado y 1 fila de datos.','err'); return; }
+  const hdr = dedupeHeaders(rows[0].map(cleanCell));
+  const data = rows.slice(1).map(r=>{
+    const obj={};
+    hdr.forEach((h,i)=>{ obj[h] = cleanCell(r[i]); });
+    return obj;
+  }).filter(o=>Object.values(o).some(v=>v!==''));
+  ingest(hdr, data, fname);
+}
+
+// ── Ruta Excel (array de arrays proveniente de SheetJS)
+function ingestAOA(aoa, fname){
+  const rows = (aoa||[]).filter(r=>Array.isArray(r) && r.some(c=>String(c==null?'':c).trim()!==''));
+  if(rows.length<2){ showAlert('alertBox1','La hoja de Excel debe tener al menos 1 encabezado y 1 fila de datos.','err'); return; }
+  const width = Math.max(...rows.map(r=>r.length));
+  const hdr = dedupeHeaders(Array.from({length:width},(_,i)=>cleanCell(rows[0][i])));
+  const data = rows.slice(1).map(r=>{
+    const obj={};
+    hdr.forEach((h,i)=>{ obj[h] = cleanCell(r[i]); });
+    return obj;
+  }).filter(o=>Object.values(o).some(v=>v!==''));
+  ingest(hdr, data, fname);
+}
+
 function detectSep(line) {
-  const counts = {',':(line.match(/,/g)||[]).length, ';':(line.match(/;/g)||[]).length, '\t':(line.match(/\t/g)||[]).length};
-  return Object.entries(counts).sort((a,b)=>b[1]-a[1])[0][0];
+  const counts = {
+    ',':(line.match(/,/g)||[]).length,
+    ';':(line.match(/;/g)||[]).length,
+    '\t':(line.match(/\t/g)||[]).length,
+    '|':(line.match(/\|/g)||[]).length
+  };
+  const best = Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
+  return best[1]>0 ? best[0] : ',';
 }
- 
+
 function renderFileChip(fname) {
   document.getElementById('filesList').innerHTML=`
     <div class="file-chip">
@@ -778,7 +797,7 @@ function renderFileChip(fname) {
       <span class="fc-ok">✓ ${rawData.length} filas · ${headers.length} columnas</span>
     </div>`;
 }
- 
+
 function renderDataPreview() {
   const el = document.getElementById('previewSection');
   const tbl = document.getElementById('previewTable');
@@ -789,63 +808,84 @@ function renderDataPreview() {
     <tbody>${preview.map(r=>`<tr>${headers.map(h=>`<td class="${numericCols.includes(h)?'num':''}">${r[h]}</td>`).join('')}</tr>`).join('')}</tbody>`;
   document.getElementById('colTypes').textContent = `Columnas numéricas detectadas: ${numericCols.join(', ')||'Ninguna'}`;
 }
- 
+
 function renderColSelector() {
   document.getElementById('colSelector').innerHTML = headers.map(h=>`
-    <div class="col-chip ${selectedCols.includes(h)?'sel':''}" id="chip-${h}" onclick="toggleCol('${h}')">
+    <div class="col-chip ${selectedCols.includes(h)?'sel':''}" id="chip-${cssId(h)}" onclick="toggleCol('${jsStr(h)}')">
       ${h} <span class="ct">${numericCols.includes(h)?'NUM':'TXT'}</span>
     </div>`).join('');
 }
- 
+
+// ids/strings seguros para encabezados con espacios, acentos o comillas
+function cssId(h){ return 'c'+Array.from(h).reduce((a,ch)=>((a*31+ch.charCodeAt(0))>>>0),7).toString(36); }
+function jsStr(h){ return String(h).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+
 function toggleCol(h) {
   if(selectedCols.includes(h)) selectedCols = selectedCols.filter(c=>c!==h);
   else selectedCols.push(h);
-  document.getElementById('chip-'+h)?.classList.toggle('sel', selectedCols.includes(h));
+  document.getElementById('chip-'+cssId(h))?.classList.toggle('sel', selectedCols.includes(h));
 }
- 
+
 function fillGroupVar() {
   const sel = document.getElementById('groupVar');
   sel.innerHTML = '<option value="">— Ninguna —</option>';
   headers.filter(h=>!numericCols.includes(h)||rawData.map(r=>r[h]).filter((v,i,a)=>a.indexOf(v)===i).length<=10)
     .forEach(h=>{ const o=document.createElement('option'); o.value=h; o.textContent=h; sel.appendChild(o); });
 }
- 
+
 function showAlert(id,msg,type) {
   const el=document.getElementById(id);
   el.className='alert '+type;
   el.textContent=msg;
-  setTimeout(()=>el.className='alert',5000);
+  if(type==='err') setTimeout(()=>el.className='alert',6000);
 }
- 
+
 // ══ ANALYSIS ══
 function runAnalysis() {
   const titleEl = MODE==='inv' ? document.getElementById('studyTitle') : document.getElementById('repTitle');
   if(!titleEl.value.trim()){ showAlert('alertBox2','El título es obligatorio.','err'); return; }
   if(selectedCols.filter(c=>numericCols.includes(c)).length===0){ showAlert('alertBox2','Selecciona al menos una columna numérica.','err'); return; }
- 
+
   goStep(3);
   document.getElementById('emptyState').style.display='none';
   document.getElementById('resultsArea').style.display='none';
- 
+
   const rc = document.getElementById('resultsContainer');
   rc.innerHTML=`<div class="loading-panel"><div class="spinner"></div>
     <div style="font-size:14px;color:var(--text3)">Calculando estadísticos…</div>
     <div style="font-size:12px;color:var(--teal);margin-top:6px" id="lSub">Inicializando</div>
     <div class="prog-bar"><div class="prog-fill" id="lFill" style="width:5%"></div></div></div>`;
- 
+
   setTimeout(()=>compute(), 60);
 }
- 
+
 function setP(msg,pct){
   const s=document.getElementById('lSub'),f=document.getElementById('lFill');
   if(s)s.textContent=msg; if(f)f.style.width=pct+'%';
 }
- 
-function num(v){ return parseFloat(v); }
-function isNum(v){ return v!==''&&!isNaN(parseFloat(v)); }
+
+// ── Normalización numérica tolerante a coma decimal, miles y espacios
+function normNum(v){
+  if(typeof v==='number') return v;
+  if(v===null||v===undefined) return NaN;
+  let s=String(v).replace(/\u00A0/g,'').trim();
+  if(s==='') return NaN;
+  s=s.replace(/\s/g,'');
+  if(s.includes(',')&&s.includes('.')){
+    if(s.lastIndexOf(',')>s.lastIndexOf('.')) s=s.replace(/\./g,'').replace(',','.'); // 1.234,56
+    else s=s.replace(/,/g,''); // 1,234.56
+  } else if(s.includes(',')){
+    s=s.replace(/\.(?=.*,)/g,''); // por si acaso
+    s=s.replace(',', '.');
+  }
+  const n=parseFloat(s);
+  return isNaN(n)?NaN:n;
+}
+function num(v){ return normNum(v); }
+function isNum(v){ return v!=='' && v!==null && v!==undefined && !isNaN(normNum(v)); }
 function getCol(col){ return rawData.map(r=>r[col]).filter(isNum).map(num); }
-function getPair(c1,c2){ const xs=[],ys=[]; rawData.forEach(r=>{ const a=parseFloat(r[c1]),b=parseFloat(r[c2]); if(!isNaN(a)&&!isNaN(b)){ xs.push(a); ys.push(b); } }); return [xs,ys]; }
- 
+function getPair(c1,c2){ const xs=[],ys=[]; rawData.forEach(r=>{ const a=normNum(r[c1]),b=normNum(r[c2]); if(!isNaN(a)&&!isNaN(b)){ xs.push(a); ys.push(b); } }); return [xs,ys]; }
+
 // ── Statistics ──
 function mean(arr){ return arr.reduce((a,b)=>a+b,0)/arr.length; }
 function median(arr){ const s=[...arr].sort((a,b)=>a-b),n=s.length; return n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2; }
@@ -855,8 +895,7 @@ function stdDev(arr,pop=false){ return Math.sqrt(variance(arr,pop)); }
 function skewness(arr){ const n=arr.length,s=stdDev(arr); if(n<3||s===0) return 0; const m=mean(arr); return (n/((n-1)*(n-2)))*arr.reduce((a,v)=>a+((v-m)/s)**3,0); }
 function kurtosis(arr){ const n=arr.length,s=stdDev(arr); if(n<2||s===0) return 0; const m=mean(arr); const k=arr.reduce((a,v)=>a+((v-m)/s)**4,0)/n; return k-3; }
 function pearson(a,b){ const ma=mean(a),mb=mean(b),n=a.length; const num=a.reduce((s,v,i)=>s+(v-ma)*(b[i]-mb),0); const den=Math.sqrt(a.reduce((s,v)=>s+(v-ma)**2,0)*b.reduce((s,v)=>s+(v-mb)**2,0)); return den?num/den:0; }
- 
-// CDF de la t de Student (aproximación por serie de la beta incompleta regularizada)
+
 function tCDF(t,df){
   const x=df/(df+t*t), a=df/2, b=0.5;
   const bt=Math.exp(a*Math.log(x)+b*Math.log(1-x));
@@ -865,7 +904,7 @@ function tCDF(t,df){
   return 1-bt*(1+sum*(b+a)/b)/2;
 }
 function pFromT(t,df){ return Math.max(0.001, 2*(1-tCDF(Math.abs(t),df))); }
- 
+
 function shapiroApprox(arr){
   const n=arr.length;
   if(n<3) return{W:1,p:1};
@@ -877,7 +916,7 @@ function shapiroApprox(arr){
   const p=Math.max(0.001,Math.min(0.999,1-Math.abs(W-0.95)*10));
   return{W:+W.toFixed(4),p:+p.toFixed(3)};
 }
- 
+
 function tTest(a,b){
   const na=a.length,nb=b.length,ma=mean(a),mb=mean(b),va=variance(a),vb=variance(b);
   const se=Math.sqrt(va/na+vb/nb);
@@ -889,17 +928,17 @@ function tTest(a,b){
   const p=pFromT(t,Math.max(1,Math.round(df)));
   return{t:+t.toFixed(3),df:+df.toFixed(1),p:+p.toFixed(3),d:+d.toFixed(3)};
 }
- 
+
 function cronbachAlpha(cols){
   const ncols=cols.length;
   if(ncols<2) return null;
   const varItems=cols.map(c=>variance(getCol(c)));
-  const totalScores=rawData.map(r=>cols.reduce((s,c)=>{ const v=parseFloat(r[c]); return s+(isNaN(v)?0:v); },0));
+  const totalScores=rawData.map(r=>cols.reduce((s,c)=>{ const v=normNum(r[c]); return s+(isNaN(v)?0:v); },0));
   const varTotal=variance(totalScores);
   if(!varTotal) return null;
   return+(ncols/(ncols-1)*(1-varItems.reduce((a,v)=>a+v,0)/varTotal)).toFixed(3);
 }
- 
+
 function linearRegression(x,y){
   const n=x.length;
   if(n<2) return{b0:n?+mean(y).toFixed(4):0,b1:0,r:0,r2:0,se:0};
@@ -914,10 +953,10 @@ function linearRegression(x,y){
   const se=n>2?Math.sqrt(sse/(n-2)):0;
   return{b0:+b0.toFixed(4),b1:+b1.toFixed(4),r:+r.toFixed(3),r2:+r2.toFixed(3),se:+se.toFixed(3)};
 }
- 
+
 // ── Charts ──
 function destroyCharts(){ charts.forEach(c=>c.destroy()); charts=[]; }
- 
+
 function makeChart(canvasId, type, labels, datasets, opts={}){
   const ctx=document.getElementById(canvasId)?.getContext('2d');
   if(!ctx) return;
@@ -926,7 +965,7 @@ function makeChart(canvasId, type, labels, datasets, opts={}){
   const c=new Chart(ctx,{type,data:{labels,datasets},options:{responsive:true,plugins:{legend:{labels:{font:{family:'Inter',size:11}}}},...opts}});
   charts.push(c);
 }
- 
+
 // ── MAIN COMPUTE ──
 function compute(){
   destroyCharts();
@@ -937,33 +976,33 @@ function compute(){
   const titleVal = MODE==='inv'
     ? (document.getElementById('studyTitle').value||'Informe de análisis cuantitativo')
     : (document.getElementById('repTitle').value||'Informe de datos');
- 
+
   setP('Descriptivos…',20);
   const desc = computeDescriptives(numSelected);
- 
+
   setP('Distribución y normalidad…',40);
   const dist = computeDistribution(numSelected);
- 
+
   setP('Correlaciones…',55);
   const corr = numSelected.length>=2 ? computeCorrelations(numSelected) : null;
- 
+
   setP('Pruebas inferenciales…',70);
   const inf = computeInferential(numSelected, groupVar, alpha);
- 
+
   setP('Likert y escala…',82);
   const lik = likertScale>0 ? computeLikert(numSelected, likertScale) : null;
- 
+
   setP('Regresión…',90);
   const reg = numSelected.length>=2 ? computeRegression(numSelected) : null;
- 
+
   setP('Renderizando…',97);
- 
+
   document.getElementById('resTitle').textContent = titleVal;
- 
+
   const rc = document.getElementById('resultsContainer');
   rc.innerHTML='';
   document.getElementById('resultsArea').style.display='block';
- 
+
   addCard(rc,'s-desc','E1','Estadística descriptiva', renderDescriptives(desc, numSelected));
   addCard(rc,'s-dist','E2','Distribución y normalidad', renderDistribution(dist, numSelected));
   if(corr) addCard(rc,'s-corr','E3','Matriz de correlaciones', renderCorrelations(corr, numSelected));
@@ -971,10 +1010,10 @@ function compute(){
   if(lik){ addCard(rc,'s-lik','E5','Análisis de escala Likert', renderLikert(lik, numSelected, likertScale)); document.getElementById('sb-likert-btn').style.display='flex'; }
   if(reg && numSelected.length>=2){ addCard(rc,'s-fact','E6','Regresión lineal simple', renderRegression(reg, numSelected)); document.getElementById('sb-fact-btn').style.display='flex'; }
   addCard(rc,'s-conc','E7','Síntesis y conclusiones', renderConclusions(desc, corr, inf, lik, titleVal, alpha));
- 
+
   setTimeout(()=>buildCharts(desc,dist,corr,numSelected),150);
 }
- 
+
 function addCard(container, id, badge, title, html){
   const d=document.createElement('div');
   d.className='res-card'; d.id=id;
@@ -985,7 +1024,7 @@ function addCard(container, id, badge, title, html){
   </div><div class="rc-body"><div class="ac">${html}</div></div>`;
   container.appendChild(d);
 }
- 
+
 // ── Descriptives ──
 function computeDescriptives(cols){
   return cols.map(col=>{
@@ -1001,7 +1040,7 @@ function computeDescriptives(cols){
       skew:+skewness(arr).toFixed(4),kurt:+kurtosis(arr).toFixed(4)};
   });
 }
- 
+
 function renderDescriptives(desc, cols){
   const html = desc.map(d=>`
     <h4>${d.col}</h4>
@@ -1020,7 +1059,7 @@ function renderDescriptives(desc, cols){
     <div class="interpret">${interpretDesc(d)}</div>`).join('');
   return `<div class="chart-wrap"><div class="chart-title">Comparación de medias</div><canvas id="chartMeans" style="max-height:220px"></canvas></div>${html}`;
 }
- 
+
 function interpretDesc(d){
   let t=`<strong>${d.col}:</strong> La distribución presenta una media de ${d.mean} con desviación estándar de ${d.sd}`;
   t+=`. El coeficiente de variación de ${d.cv}% indica ${d.cv<15?'alta homogeneidad':d.cv<30?'variabilidad moderada':'alta dispersión'} en los datos.`;
@@ -1028,7 +1067,7 @@ function interpretDesc(d){
   else t+=` La asimetría (${d.skew}) es ${Math.abs(d.skew)<0.5?'casi nula, sugiriendo simetría':'leve'}.`;
   return t;
 }
- 
+
 // ── Distribution ──
 function computeDistribution(cols){
   return cols.map(col=>{
@@ -1038,7 +1077,7 @@ function computeDistribution(cols){
     return{col,sw,bins,n:arr.length};
   });
 }
- 
+
 function makeBins(arr,k){
   const mn=Math.min(...arr),mx=Math.max(...arr),w=(mx-mn)/k;
   const bins=[];
@@ -1048,7 +1087,7 @@ function makeBins(arr,k){
   }
   return bins;
 }
- 
+
 function renderDistribution(dist, cols){
   const alpha = parseFloat(document.getElementById('alphaLevel')?.value||'0.05');
   const swRows=dist.map(d=>{
@@ -1056,7 +1095,7 @@ function renderDistribution(dist, cols){
     return`<tr><td>${d.col}</td><td class="num">${d.sw.W}</td><td class="num">${d.sw.p}</td>
       <td><span class="sig ${sig?'no':'yes'}">${sig?'No normal (p<α)':'Normal (p≥α)'}</span></td>
       <td>${sig?'Prueba no paramétrica recomendada':'Prueba paramétrica válida'}</td></tr>`;}).join('');
- 
+
   return`<h4>Prueba de normalidad (Shapiro-Wilk aproximado)</h4>
     <div class="table-wrap"><table class="data-table">
       <thead><tr><th>Variable</th><th>W</th><th>p-valor</th><th>Resultado</th><th>Implicación</th></tr></thead>
@@ -1064,14 +1103,14 @@ function renderDistribution(dist, cols){
     <div class="chart-wrap"><div class="chart-title">Histograma — ${cols[0]}</div><canvas id="chartHist" style="max-height:220px"></canvas></div>
     <div class="interpret">La normalidad de los datos es un supuesto clave para pruebas paramétricas (t, ANOVA). Cuando p &lt; α (${alpha}) la distribución se desvía significativamente de la normal y deben preferirse alternativas no paramétricas.</div>`;
 }
- 
+
 // ── Correlations ──
 function computeCorrelations(cols){
   const matrix={};
   cols.forEach(c1=>{ matrix[c1]={}; cols.forEach(c2=>{ const [a,b]=getPair(c1,c2); matrix[c1][c2]=a.length>1?+pearson(a,b).toFixed(3):(c1===c2?1:0); }); });
   return matrix;
 }
- 
+
 function renderCorrelations(corr, cols){
   const hdr=`<tr><th></th>${cols.map(c=>`<th>${c}</th>`).join('')}</tr>`;
   const rows=cols.map(c1=>`<tr><th style="text-align:left;padding-left:12px">${c1}</th>${cols.map(c2=>{
@@ -1080,7 +1119,7 @@ function renderCorrelations(corr, cols){
     return`<td class="${cls}">${r}</td>`;}).join('')}</tr>`).join('');
   const notable=[];
   cols.forEach((c1,i)=>cols.forEach((c2,j)=>{ if(j>i){ const r=corr[c1][c2]; if(Math.abs(r)>=0.5) notable.push({c1,c2,r}); } }));
- 
+
   return`<h4>Matriz de correlaciones de Pearson (r)</h4>
     <div class="corr-wrap"><table class="corr-table"><thead>${hdr}</thead><tbody>${rows}</tbody></table></div>
     <p style="font-size:11px;color:var(--text3)">Verde = correlación positiva moderada-fuerte (r≥0.3) · Rojo = correlación negativa · Gris = baja/nula · Diagonal = autocorrelación (r=1)</p>
@@ -1088,7 +1127,7 @@ function renderCorrelations(corr, cols){
     ${notable.length?`<h4>Pares con correlación notable</h4><ul>${notable.map(n=>`<li><strong>${n.c1}</strong> × <strong>${n.c2}</strong>: r = <span class="val-pill">${n.r}</span> — correlación ${interpretCorr(n.r)}</li>`).join('')}</ul>`:'<p>No se encontraron pares con |r| ≥ 0.5.</p>'}
     <div class="interpret">Nota: la correlación de Pearson mide la asociación lineal. No implica causalidad. Para variables con distribución no normal se recomienda usar Spearman (rs).</div>`;
 }
- 
+
 function interpretCorr(r){
   const a=Math.abs(r), s=r>0?'positiva':'negativa';
   if(a>=0.9) return s+' muy fuerte';
@@ -1097,7 +1136,7 @@ function interpretCorr(r){
   if(a>=0.3) return s+' débil';
   return s+' muy débil';
 }
- 
+
 // ── Inferential ──
 function computeInferential(cols, groupVar, alpha){
   const result={tests:[],groupStat:null};
@@ -1141,9 +1180,9 @@ function computeInferential(cols, groupVar, alpha){
   }
   return result;
 }
- 
+
 function fCDF(f,d1,d2){ return Math.min(1,1-1/(1+d1*f/d2)); }
- 
+
 function renderInferential(inf, groupVar, alpha){
   if(!inf.tests.length) return`<p>No se pudo ejecutar prueba inferencial. Verifica que tengas columnas numéricas y, si deseas comparar grupos, selecciona la variable de agrupación.</p>`;
   return inf.tests.map(t=>{
@@ -1165,7 +1204,7 @@ function renderInferential(inf, groupVar, alpha){
     return'';
   }).join('');
 }
- 
+
 // ── Likert ──
 function computeLikert(cols, scale){
   const alpha_c = cronbachAlpha(cols);
@@ -1174,23 +1213,23 @@ function computeLikert(cols, scale){
     const freq=Array.from({length:scale},(_,i)=>arr.filter(x=>x===i+1).length);
     return{col,mean:+mean(arr).toFixed(3),sd:+stdDev(arr).toFixed(3),freq};
   });
-  const totalScores = rawData.map(r=>cols.reduce((s,c)=>{const v=parseFloat(r[c]);return s+(isNaN(v)?0:v);},0));
+  const totalScores = rawData.map(r=>cols.reduce((s,c)=>{const v=normNum(r[c]);return s+(isNaN(v)?0:v);},0));
   const maxTotal = scale * cols.length;
   const index = +(mean(totalScores)/maxTotal*100).toFixed(1);
   return{alpha_c,itemStats,totalScores,index,maxTotal,scale};
 }
- 
+
 function renderLikert(lik, cols, scale){
   const interp = lik.alpha_c>=0.9?'excelente':lik.alpha_c>=0.8?'buena':lik.alpha_c>=0.7?'aceptable':lik.alpha_c>=0.6?'cuestionable':'inaceptable';
   const colors=['#C13030','#B86E00','#6B7A90','#1A8C7A','#1F7A4A'];
   const labels=['Muy en desacuerdo','En desacuerdo','Neutro','De acuerdo','Muy de acuerdo'].slice(0,scale);
- 
+
   const bars = lik.itemStats.map(it=>{
     const total=it.freq.reduce((a,b)=>a+b,0)||1;
     const segs=it.freq.map((f,i)=>`<div class="lb-seg" style="width:${(f/total*100).toFixed(1)}%;background:${colors[i]||'#999'}">${f>0&&f/total>0.08?Math.round(f/total*100)+'%':''}</div>`).join('');
     return`<div class="likert-bar"><div class="lb-label">${it.col} — x̄ = ${it.mean} (SD = ${it.sd})</div><div class="lb-track">${segs}</div></div>`;
   }).join('');
- 
+
   return`<h4>Fiabilidad del instrumento</h4>
     <div class="stat-grid">
       <div class="stat-card"><div class="sc-label">Alfa de Cronbach</div><div class="sc-value">${lik.alpha_c??'—'}</div><div class="sc-unit">Consistencia ${interp}</div></div>
@@ -1205,7 +1244,7 @@ function renderLikert(lik, cols, scale){
     </div>
     ${bars}`;
 }
- 
+
 // ── Regression ──
 function computeRegression(cols){
   if(cols.length<2) return null;
@@ -1213,7 +1252,7 @@ function computeRegression(cols){
   const reg=linearRegression(x,y);
   return{...reg,xCol:cols[0],yCol:cols[1],n:x.length};
 }
- 
+
 function renderRegression(reg, cols){
   if(!reg) return'<p>Se requieren al menos dos variables numéricas.</p>';
   return`<h4>Regresión lineal simple: ${reg.xCol} → ${reg.yCol}</h4>
@@ -1229,7 +1268,7 @@ function renderRegression(reg, cols){
     <p>Ecuación del modelo: <span class="val-pill">ŷ = ${reg.b0} + ${reg.b1}·x</span></p>
     <div class="interpret">${interpretReg(reg)}</div>`;
 }
- 
+
 function interpretReg(reg){
   const r2pct=(reg.r2*100).toFixed(1);
   let t=`El modelo de regresión lineal explica el ${r2pct}% de la varianza de <strong>${reg.yCol}</strong> a partir de <strong>${reg.xCol}</strong> (R² = ${reg.r2}).`;
@@ -1238,14 +1277,14 @@ function interpretReg(reg){
   if(reg.r2<0.3) t+=' El R² bajo sugiere que la relación lineal es débil; considera variables adicionales.';
   return t;
 }
- 
+
 // ── Conclusions ──
 function renderConclusions(desc, corr, inf, lik, title, alpha){
   const n = rawData.length;
   const numCols = selectedCols.filter(c=>numericCols.includes(c));
   let html=`<h4>Resumen del análisis</h4>
     <p>El estudio "<strong>${title}</strong>" procesó <strong>${n}</strong> casos con <strong>${numCols.length}</strong> variable(s) numérica(s). A continuación se sintetizan los principales hallazgos estadísticos:</p><ul>`;
- 
+
   desc.forEach(d=>{ html+=`<li><strong>${d.col}</strong>: x̄ = ${d.mean}, SD = ${d.sd}, CV = ${d.cv}% (${d.cv<15?'alta homogeneidad':d.cv<30?'variabilidad moderada':'alta dispersión'}).</li>`; });
   if(lik) html+=`<li>Fiabilidad del instrumento: α de Cronbach = ${lik.alpha_c} (consistencia ${lik.alpha_c>=0.8?'buena-excelente':'aceptable o inferior'}) · Índice general: ${lik.index}%.</li>`;
   if(inf&&inf.tests.length) inf.tests.forEach(t=>{
@@ -1263,7 +1302,7 @@ function renderConclusions(desc, corr, inf, lik, title, alpha){
   html+=`<div class="interpret">Este informe fue generado automáticamente por AnalisisCuant. Las pruebas inferenciales utilizan aproximaciones numéricas de las distribuciones (t, F, Shapiro-Wilk), por lo que los p-valores son orientativos; para publicación se recomienda confirmar con software estadístico (R, SPSS, jamovi). Los resultados deben ser revisados e interpretados por el investigador en el contexto de su marco teórico y diseño metodológico específico.</div>`;
   return html;
 }
- 
+
 // ── Chart building ──
 function buildCharts(desc, dist, corr, cols){
   if(document.getElementById('chartMeans')&&desc.length){
@@ -1299,7 +1338,7 @@ function buildCharts(desc, dist, corr, cols){
     charts.push(c);
   }
 }
- 
+
 // ══ EXPORT ══
 const TRANSLATIONS = {
   'Estadística descriptiva':'Descriptive Statistics','Media (x̄)':'Mean (x̄)','Mediana':'Median','Desv. estándar':'Std. Deviation','Moda':'Mode','Rango':'Range','Varianza':'Variance','Asimetría':'Skewness','Curtosis':'Kurtosis',
@@ -1309,9 +1348,9 @@ const TRANSLATIONS = {
   'Regresión lineal simple':'Simple Linear Regression','Síntesis y conclusiones':'Summary and Conclusions',
   'Informe de análisis cuantitativo':'Quantitative Analysis Report','Generado':'Generated'
 };
- 
+
 function tr(txt, lang){ if(lang==='en') { let t=txt; Object.entries(TRANSLATIONS).forEach(([es,en])=>{t=t.replace(new RegExp(es,'gi'),en);}); return t; } return txt; }
- 
+
 function exportHTML(lang='es') {
   const title = document.getElementById('resTitle').textContent;
   const content = document.getElementById('resultsContainer').innerHTML;
@@ -1339,10 +1378,10 @@ function exportHTML(lang='es') {
     .lb-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:600}
     canvas{max-width:100%!important;max-height:260px!important}`;
   const bodyContent = lang==='en' ? tr(content,lang) : content;
-  const blob=new Blob([`<!DOCTYPE html><html lang="${lang}"><head><meta charset="UTF-8"><title>${tr(title,lang)}</title><style>${css}</style></head><body><h1>${tr(title,lang)}</h1><p style="font-size:12px;color:#6B7A90">${lang==='en'?'Generated':'Generado'}: ${date} · AnalisisCuant</p>${bodyContent}</body></html>`],{type:'text/html'});
+  const blob=new Blob(['\uFEFF'+`<!DOCTYPE html><html lang="${lang}"><head><meta charset="UTF-8"><title>${tr(title,lang)}</title><style>${css}</style></head><body><h1>${tr(title,lang)}</h1><p style="font-size:12px;color:#6B7A90">${lang==='en'?'Generated':'Generado'}: ${date} · AnalisisCuant</p>${bodyContent}</body></html>`],{type:'text/html;charset=utf-8'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`informe-cuantitativo-${lang}.html`; a.click();
 }
- 
+
 function exportTXT(){
   const cards=document.querySelectorAll('.res-card');
   let txt=`INFORME DE ANÁLISIS CUANTITATIVO\n${'='.repeat(60)}\n`;
@@ -1353,10 +1392,10 @@ function exportTXT(){
     const body=card.querySelector('.rc-body')?.innerText||'';
     txt+=`\n${'─'.repeat(60)}\n${title.toUpperCase()}\n${'─'.repeat(60)}\n${body}\n`;
   });
-  const blob=new Blob([txt],{type:'text/plain'});
+  const blob=new Blob(['\uFEFF'+txt],{type:'text/plain;charset=utf-8'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='informe-cuantitativo.txt'; a.click();
 }
- 
+
 function resetAll(){
   rawData=[]; headers=[]; numericCols=[]; selectedCols=[]; destroyCharts();
   document.getElementById('filesList').innerHTML='';
@@ -1366,14 +1405,15 @@ function resetAll(){
   document.getElementById('btnNext1').disabled=true;
   document.getElementById('pasteArea').value='';
   document.getElementById('colSelector').innerHTML='';
+  document.getElementById('alertBox1').className='alert';
   document.getElementById('sidebarSections').style.display='none';
   ['sb-likert-btn','sb-fact-btn'].forEach(id=>document.getElementById(id).style.display='none');
   goStep(0);
 }
- 
+
 // ══ INIT ══
 renderPreview();
+
 </script>
 </body>
 </html>
- 
