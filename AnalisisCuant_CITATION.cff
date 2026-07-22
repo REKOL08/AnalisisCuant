@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "AnalisisCuant"
+abstract: >-
+  A 100% browser-based quantitative statistics tool for academic and
+  institutional research. Runs entirely client-side (no backend, no
+  install): descriptive statistics, normality testing, Pearson
+  correlation, Student's t-test, one-way ANOVA, Likert scale reliability
+  (Cronbach's alpha), and simple linear regression, with self-contained
+  HTML/TXT report export in Spanish and English.
+authors:
+  - family-names: "Labrada Jimenez"
+    given-names: "Alejandro"
+    alias: "REKOL08"
+version: 1.0.0
+date-released: 2026-07-22
+url: "https://rekol08.github.io/AnalisisCuant/"
+repository-code: "https://github.com/REKOL08/AnalisisCuant"
+license: MIT
+keywords:
+  - statistics
+  - quantitative-analysis
+  - academic-research
+  - descriptive-statistics
+  - hypothesis-testing
+  - likert-scale
+  - cronbachs-alpha
